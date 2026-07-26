@@ -72,8 +72,7 @@ image = (
 )
 
 # mount for the entire ai-toolkit directory
-# example: "/Users/username/ai-toolkit" is the local directory, "/root/ai-toolkit" is the remote directory
-code_mount = modal.Mount.from_local_dir("/Users/username/ai-toolkit", remote_path="/root/ai-toolkit")
+code_mount = modal.Mount.from_local_dir("/root/ai-toolkit", remote_path="/root/ai-toolkit")
 
 # create the Modal app with the necessary mounts and volumes
 app = modal.App(name="flux-lora-training", image=image, mounts=[code_mount], volumes={MOUNT_DIR: model_volume})
@@ -106,7 +105,7 @@ def print_end_message(jobs_completed, jobs_failed):
     # more about modal GPU's: https://modal.com/docs/guide/gpu
     gpu="A100", # gpu="H100"
     # more about modal timeouts: https://modal.com/docs/guide/timeouts
-    timeout=7200  # 2 hours, increase or decrease if needed
+    timeout=14400  # 4 hours, increase for 4000 steps
 )
 def main(config_file_list_str: str, recover: bool = False, name: str = None):
     # convert the config file list from a string to a list

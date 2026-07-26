@@ -444,6 +444,18 @@ class AiToolkitDataset(LatentCachingMixin, ControlCachingMixin, CLIPCachingMixin
         # remove items in the _controls_ folder
         file_list = [x for x in file_list if not os.path.basename(os.path.dirname(x)) == "_controls"]
 
+        # per-image repeats from JSON manifest
+        if self.caption_dict is not None:
+            expanded_file_list = []
+            for filepath in file_list:
+                entry = self.caption_dict.get(filepath, {})
+                if isinstance(entry, dict):
+                    repeats = int(entry.get('repeats', 1))
+                else:
+                    repeats = 1
+                expanded_file_list.extend([filepath] * max(0, repeats))
+            file_list = expanded_file_list
+
         if self.dataset_config.num_repeats > 1:
             # repeat the list
             file_list = file_list * self.dataset_config.num_repeats
